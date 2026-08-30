@@ -11,7 +11,7 @@ from keras.models import load_model
 import numpy as np
 import pickle
 import re
-
+import os
 
 
 
@@ -23,11 +23,15 @@ C. Max Sequence Length
 D. Emotion Labels
 E. Emotion emojis
 """
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 #A. Model Path (BiGRU)
-model_path = "Artifacts/BiGRU_Model.keras"
+model_path = os.path.join(BASE_DIR, "Artifacts", "BiGRU_Model.keras")
 
 #B. Tokenizer Path
-tokenizer_path = "Artifacts/tokenizer.pkl"
+tokenizer_path = os.path.join(BASE_DIR, "Artifacts", "tokenizer.pkl")
 
 #C. Max Sequence Length
 max_sequence_length = 50
@@ -125,8 +129,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount('/static', StaticFiles(directory="static"), name="static")
-
+app.mount('/static', StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 
 """
@@ -139,8 +142,8 @@ C. Predict Emotion Endpoint ('/predict')
 #A. Server UI at homepage ('/')
 @app.get('/', include_in_schema=False)
 def server_ui():
-    return FileResponse('static/index (3).html')
-
+    return FileResponse(os.path.join(BASE_DIR, 'static', 'index.html')) 
+    
 #B. Health Check Endpoint ('/health')
 @app.get('/health', response_model=HealthResponse)
 def health_check():
